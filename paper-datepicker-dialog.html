@@ -5,16 +5,57 @@
 <dom-module id="paper-datepicker-dialog">
 
     <style>
-        /* CSS rules for your element */
+    :root {
+        --default-primary-color: #009688;
+        --default-text-color: white;
+        box-sizing: border-box;
+    }
+
+    paper-dialog {
+        width: 400px;
+    }
+
+    paper-dialog .header {
+        margin-top: 0;
+        padding: 24px;
+        background-color: var(--default-primary-color);
+        color: var(--default-text-color);
+    }
+
+    paper-dialog .header span {
+        display: block;
+        margin: 12px 0;
+        opacity: .7;
+    }
+
+    paper-dialog .header .highlight {
+        opacity: 1;
+    }
+
+    paper-dialog .header .year {
+        font-size: 1.5em;
+    }
+
+    paper-dialog .header .date {
+        font-size: 2em;
+    }
     </style>
 
     <template>
-        <paper-dialog id="actions">
-            <h2>Dialog Title</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <paper-dialog id="dialog">
+
+            <div class="header">
+                <span class="year">2017</span>
+                <span class="date highlight">Thu, Apr 3</span>
+            </div>
+
+            <div class="date-navigation">
+                Month...
+            </div>
+
             <div class="buttons">
                 <paper-button dialog-dismiss>Decline</paper-button>
-                <paper-button dialog-confirm autofocus>Accept</paper-button>
+                <paper-button on-click="_confirmAction" dialog-confirm autofocus>Accept</paper-button>
             </div>
         </paper-dialog>
     </template>
@@ -29,22 +70,33 @@
 
             value: {
                 type: String,
-                value: (new Date()).toISOString()
+                value: (new Date()).toISOString(),
+                reflectToAttribute: true
             }
+
+            // locale
+            // minDate, maxDate
+
         },
 
         ready: function () {
-            this.greeting = 'ASD';
+
+            // Ready
         },
 
         open: function () {
 
-            console.log('Open');
+            this.$.dialog.open();
         },
 
         close: function () {
 
-            console.log('Close');
+            this.$.dialog.close();
+        },
+
+        _confirmAction: function () {
+
+            console.log('Confirm');
         }
     });
     </script>
