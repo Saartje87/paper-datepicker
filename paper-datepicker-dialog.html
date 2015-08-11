@@ -50,17 +50,45 @@
         text-align: center;
         color: #9e9e9e;
     }
+
+    paper-dialog .month-container .container > div {
+        @apply(--layout-horizontal);
+        @apply(‑‑layout-end-justified);
+    }
+
+    paper-dialog .month-container .container paper-button {
+        @apply(--layout-flex);
+        min-width: 10px;
+        border-radius: 50%;
+    }
+
+    paper-dialog .month-container .navigation {
+        @apply(--layout-horizontal);
+        margin-left: 24px;
+        margin-right: 24px;
+        margin-bottom: 12px;
+    }
+
+    paper-dialog .month-container .navigation div:nth-child(2) {
+        @apply(--layout-flex);
+        text-align: center;
+    }
     </style>
 
     <template>
         <paper-dialog id="dialog">
 
             <div class="header">
-                <span class="year">2017</span> <!-- Could be a href, click opens year selector -->
-                <span class="date highlight">Thu, Apr 3</span>
+                <span class="year">{{selectedYear}}</span> <!-- Could be a href, click opens year selector -->
+                <span class="date highlight">{{selectedDate}}</span>
             </div>
 
             <div class="month-container">
+                <div class="navigation">
+                    <div on-click="_prevMonthAction">&lt;</div>
+                    <div>{{currentMonth}}</div>
+                    <div on-click="_nextMonthAction">&gt;</div>
+                </div>
                 <div class="head">
                     <span>M</span>
                     <span>D</span>
@@ -71,7 +99,13 @@
                     <span>Z</span>
                 </div>
                 <div class="container">
-
+                    <template is="dom-repeat" items="{{dates}}">
+                        <div>
+                            <template is="dom-repeat" items="{{item}}">
+                                <paper-button>{{item.day}}</paper-button>
+                            </template>
+                        </div>
+                    </template>
                 </div>
             </div>
 
@@ -84,6 +118,9 @@
 
     <script>
     // element registration
+    var MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+
     Polymer({
 
         is: "paper-datepicker-dialog",
@@ -94,16 +131,52 @@
                 type: String,
                 value: (new Date()).toISOString(),
                 reflectToAttribute: true
+            },
+
+            dates: {
+                type: Array,
+                value: function () {
+                    return [];
+                }
+            },
+
+            date: {
+                type: Date,
+                value: function () {
+                    return new Date();
+                },
+                observer: '_createDates'
+            },
+
+            selectedYear: {
+                type: String,
+                // observer: '_getYear(date)'
+            },
+
+            selectedDate: {
+                type: String
+            },
+
+            currentMonth: {
+                type: String
             }
 
             // locale
             // minDate, maxDate
-
         },
 
         ready: function () {
 
             // Ready
+            // this.dates = [[{day: 1}], [{day: 1}], [{day: 1}]];
+
+            setTimeout(function () {
+                this._createDates();
+            }.bind(this), 100);
+
+            // @todo(Saar) Should handle this on select
+            this.selectedYear = this.date.getFullYear();
+            this.selectedDate = this.date.toDateString().substr(0, 11);
         },
 
         open: function () {
@@ -119,6 +192,62 @@
         _confirmAction: function () {
 
             console.log('Confirm');
+        },
+
+        _prevMonthAction: function () {
+
+            this.date.setMonth(this.date.getMonth() - 1);
+
+            this._createDates();
+        },
+
+        _nextMonthAction: function () {
+
+            this.date.setMonth(this.date.getMonth() + 1);
+
+            this._createDates();
+        },
+
+        _getYear: function () {
+
+            console.log(this.date.getFullYear());
+
+            return this.date.getFullYear();
+        },
+
+        _createDates: function () {
+
+            //@todo(Saar) always have 6 weeks
+
+            var date = new Date(this.date),
+                endDate = new Date(this.date),
+                dates = [[]],
+                week;
+
+            this.currentMonth = MONTH_NAMES[date.getMonth()];
+
+            date.setDate(1);
+            endDate.setDate(1);
+            endDate.setMonth(endDate.getMonth() + 1);
+
+            while( date < endDate ) {
+
+                if( date.getDay() === 1 ) {
+
+                    dates.push([]);
+                }
+
+                week = dates[dates.length - 1];
+
+                if( week ) {
+
+                    week.push({day: date.getDate()});
+                }
+
+                date.setDate(date.getDate() + 1);
+            }
+
+            this.dates = dates;
         }
     });
     </script>
