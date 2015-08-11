@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
@@ -39,23 +40,44 @@
     paper-dialog .header .date {
         font-size: 2em;
     }
+
+    paper-dialog .month-container .head {
+        @apply(--layout-horizontal);
+    }
+
+    paper-dialog .month-container .head span {
+        @apply(--layout-flex);
+        text-align: center;
+        color: #9e9e9e;
+    }
     </style>
 
     <template>
         <paper-dialog id="dialog">
 
             <div class="header">
-                <span class="year">2017</span>
+                <span class="year">2017</span> <!-- Could be a href, click opens year selector -->
                 <span class="date highlight">Thu, Apr 3</span>
             </div>
 
-            <div class="date-navigation">
-                Month...
+            <div class="month-container">
+                <div class="head">
+                    <span>M</span>
+                    <span>D</span>
+                    <span>W</span>
+                    <span>D</span>
+                    <span>V</span>
+                    <span>Z</span>
+                    <span>Z</span>
+                </div>
+                <div class="container">
+
+                </div>
             </div>
 
             <div class="buttons">
-                <paper-button dialog-dismiss>Decline</paper-button>
-                <paper-button on-click="_confirmAction" dialog-confirm autofocus>Accept</paper-button>
+                <paper-button dialog-dismiss>CANCEL</paper-button>
+                <paper-button on-click="_confirmAction" dialog-confirm autofocus>OK</paper-button>
             </div>
         </paper-dialog>
     </template>
