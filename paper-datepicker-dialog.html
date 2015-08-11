@@ -56,9 +56,14 @@
         @apply(‑‑layout-end-justified);
     }
 
+    paper-dialog .month-container .container > div:first-child {
+        @apply(‑‑layout-end-justified);
+    }
+
     paper-dialog .month-container .container paper-button {
         @apply(--layout-flex);
-        min-width: 10px;
+        min-width:  calc(100% / 9);
+        max-width: calc(100% / 9);
         border-radius: 50%;
     }
 
