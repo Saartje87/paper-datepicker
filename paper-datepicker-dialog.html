@@ -1,0 +1,45 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="paper-datepicker-dialog">
+
+  <style>
+    /* CSS rules for your element */
+  </style>
+
+  <template>
+    <!-- local DOM for your element -->
+
+    <div>{{value}}</div> <!-- data bindings in local DOM -->
+  </template>
+
+    <script>
+    // element registration
+    Polymer({
+
+        is: "paper-datepicker-dialog",
+
+        properties: {
+
+            value: {
+                type: String,
+                value: (new Date()).toISOString()
+            }
+        },
+
+        ready: function () {
+            this.greeting = 'ASD';
+        },
+
+        open: function () {
+
+            console.log('Open');
+        },
+
+        close: function () {
+
+            console.log('Close');
+        }
+    });
+    </script>
+
+</dom-module>
