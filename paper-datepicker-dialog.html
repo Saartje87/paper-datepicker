@@ -63,18 +63,21 @@
     paper-dialog .month-container .container paper-button {
         @apply(--layout-flex);
         min-width:  calc(100% / 9);
-        max-width: calc(100% / 9);
+        /*max-width: calc(100% / 9);*/
         border-radius: 50%;
     }
 
     paper-dialog .month-container .navigation {
         @apply(--layout-horizontal);
-        margin-left: 24px;
-        margin-right: 24px;
         margin-bottom: 12px;
     }
 
-    paper-dialog .month-container .navigation div:nth-child(2) {
+    paper-dialog .month-container .navigation paper-button {
+        min-width: 40px;
+        border-radius: 50%;
+    }
+
+    paper-dialog .month-container .navigation *:nth-child(2) {
         @apply(--layout-flex);
         text-align: center;
     }
@@ -90,9 +93,9 @@
 
             <div class="month-container">
                 <div class="navigation">
-                    <div on-click="_prevMonthAction">&lt;</div>
+                    <paper-button on-click="_prevMonthAction">&lt;</paper-button>
                     <div>{{currentMonth}}</div>
-                    <div on-click="_nextMonthAction">&gt;</div>
+                    <paper-button on-click="_nextMonthAction">&gt;</paper-button>
                 </div>
                 <div class="head">
                     <span>M</span>
