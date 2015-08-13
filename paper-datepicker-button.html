@@ -32,9 +32,11 @@
     </style>
     <template>
         <paper-ripple id="ink" class="circle" center></paper-ripple>
-        <content></content>
+        <span>[[day]]</span>
     </template>
     <script>
+    var TODAY = new Date();
+
     Polymer({
         is: 'paper-datepicker-button',
 
@@ -46,6 +48,22 @@
         behaviors: [
             Polymer.PaperInkyFocusBehavior
         ],
+
+        properties: {
+            date: {
+                type: Date,
+                observer: '_dateChanged'
+            },
+
+            day: {
+                type: Number
+            }
+        },
+
+        _dateChanged: function () {
+
+            this.day = this.date.getDate();
+        }
     });
     </script>
 </dom-module>
