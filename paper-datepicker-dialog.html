@@ -104,11 +104,11 @@
 
             <div class="container">
                 <div class="navigation">
-                    <paper-icon-button icon="hardware:keyboard-arrow-left" alt="menu"></paper-icon-button>
+                    <paper-icon-button icon="hardware:keyboard-arrow-left" alt="menu" on-tap="_prevMonthAction"></paper-icon-button>
                     <div class="flex">
                         <span>{ Date }</span>
                     </div>
-                    <paper-icon-button icon="hardware:keyboard-arrow-right" alt="menu"></paper-icon-button>
+                    <paper-icon-button icon="hardware:keyboard-arrow-right" alt="menu" on-tap="_nextMonthAction"></paper-icon-button>
                 </div>
 
                 <div class="header">
@@ -122,7 +122,15 @@
                 </div>
 
                 <section>
-                    <div class="row">
+                    <template is="dom-repeat" items="{{dates}}">
+                        <div class="row">
+                            <template is="dom-repeat" items="{{item}}">
+                                <paper-datepicker-button date="{{item}}"></paper-datepicker-button>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- <div class="row">
                         <paper-datepicker-button>1</paper-datepicker-button>
                         <paper-datepicker-button>2</paper-datepicker-button>
                         <paper-datepicker-button>3</paper-datepicker-button>
@@ -165,7 +173,7 @@
                         <paper-datepicker-button>3</paper-datepicker-button>
                         <paper-datepicker-button>4</paper-datepicker-button>
                         <paper-datepicker-button>5</paper-datepicker-button>
-                    </div>
+                    </div> -->
                 </section>
 
                 <div class="buttons">
@@ -226,13 +234,6 @@
         },
 
         ready: function () {
-
-            // Ready
-            // this.dates = [[{day: 1}], [{day: 1}], [{day: 1}]];
-
-            setTimeout(function () {
-                this._createDates();
-            }.bind(this), 100);
 
             // @todo(Saar) Should handle this on select
             this.selectedYear = this.date.getFullYear();
@@ -301,7 +302,7 @@
 
                 if( week ) {
 
-                    week.push({day: date.getDate()});
+                    week.push(new Date(date));
                 }
 
                 date.setDate(date.getDate() + 1);
