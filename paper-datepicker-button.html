@@ -1,0 +1,51 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="paper-datepicker-button">
+    <style>
+    :host {
+        display: inline-block;
+        position: relative;
+        padding: 8px;
+        outline: none;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        z-index: 0;
+
+        @apply(--paper-icon-button);
+    }
+
+    :host #ink {
+        color: var(--paper-icon-button-ink-color, --primary-text-color);
+        opacity: 0.6;
+    }
+
+    :host([disabled]) {
+        color: var(--paper-icon-button-disabled-text, --disabled-text-color);
+        pointer-events: none;
+        cursor: auto;
+        @apply(--paper-icon-button-disabled);
+    }
+    </style>
+    <template>
+        <paper-ripple id="ink" class="circle" center></paper-ripple>
+        <content></content>
+    </template>
+    <script>
+    Polymer({
+        is: 'paper-datepicker-button',
+
+        hostAttributes: {
+            role: 'button',
+            tabindex: '0'
+        },
+
+        behaviors: [
+            Polymer.PaperInkyFocusBehavior
+        ],
+    });
+    </script>
+</dom-module>
