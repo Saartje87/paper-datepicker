@@ -17,7 +17,7 @@
     }
 
     paper-dialog {
-        min-width: 400px;
+        min-width: 300px;
     }
 
     /*paper-dialog.landscape {
@@ -60,14 +60,23 @@
         margin: 0;
     }
 
-    /* Navigation */
     .navigation {
         @apply(--layout-horizontal);
+    }
+
+    .header {
+        @apply(--layout-horizontal);
+    }
+
+    .header div {
+        @apply(--layout-flex);
+        text-align: center;
+        color: #9e9e9e; /* @todo(Saar) Use --foo */
     }
     </style>
 
     <template>
-        <paper-dialog id="dialog">
+        <paper-dialog modal id="dialog">
 
             <div class="toolbar">
                 <div class="year-display">2014</div>
@@ -81,6 +90,16 @@
                         <span>{ Date }</span>
                     </div>
                     <paper-icon-button icon="hardware:keyboard-arrow-right" alt="menu"></paper-icon-button>
+                </div>
+
+                <div class="header">
+                    <div>M</div>
+                    <div>D</div>
+                    <div>W</div>
+                    <div>D</div>
+                    <div>V</div>
+                    <div>Z</div>
+                    <div>Z</div>
                 </div>
 
                 <div class="buttons">
