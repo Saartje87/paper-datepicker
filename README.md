@@ -6,3 +6,6 @@ Material design date picker created with polymer
 ~~~html
 <paper-datepicker value="2015-01-01"></paper-datepicker>
 ~~~
+
+paper-datepicker-dialog
+paper-datepicker

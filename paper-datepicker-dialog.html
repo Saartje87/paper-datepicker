@@ -2,6 +2,10 @@
 <link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<!-- <link rel="import" href="../bower_components/iron-icons/iron-icons.html"> -->
+<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
 <dom-module id="paper-datepicker-dialog">
 
@@ -13,113 +17,76 @@
     }
 
     paper-dialog {
-        width: 400px;
+        min-width: 400px;
     }
 
-    paper-dialog .header {
-        margin-top: 0;
-        padding: 24px;
+    /*paper-dialog.landscape {
+        @apply(--layout-horizontal);
+    }*/
+
+    @media all and (orientation:landscape) {
+        paper-dialog {
+            @apply(--layout-horizontal);
+        }
+    }
+
+    /* Toolbar */
+    .toolbar {
         background-color: var(--default-primary-color);
         color: var(--default-text-color);
+        margin-top: 0;
+        padding: 24px;
     }
 
-    paper-dialog .header span {
-        display: block;
-        margin: 12px 0;
-        opacity: .7;
+    .toolbar .year-display {
+        overflow: hidden;
+        font-size: 1.5em;
+        margin-bottom: 4px;
+        opacity: 0.7;
     }
 
-    paper-dialog .header .highlight {
+    .toolbar .date-display {
+        overflow: hidden;
+        font-size: 1.5em;
+        opacity: 0.7;
+    }
+
+    .toolbar .highlight {
         opacity: 1;
     }
 
-    paper-dialog .header .year {
-        font-size: 1.5em;
+    /* Container */
+    .container {
+        margin: 0;
     }
 
-    paper-dialog .header .date {
-        font-size: 2em;
-    }
-
-    paper-dialog .month-container .head {
+    /* Navigation */
+    .navigation {
         @apply(--layout-horizontal);
-    }
-
-    paper-dialog .month-container .head span {
-        @apply(--layout-flex);
-        text-align: center;
-        color: #9e9e9e;
-    }
-
-    paper-dialog .month-container .container > div {
-        @apply(--layout-horizontal);
-        @apply(‑‑layout-end-justified);
-    }
-
-    paper-dialog .month-container .container > div:first-child {
-        @apply(‑‑layout-end-justified);
-    }
-
-    paper-dialog .month-container .container paper-button {
-        @apply(--layout-flex);
-        min-width:  calc(100% / 9);
-        /*max-width: calc(100% / 9);*/
-        border-radius: 50%;
-    }
-
-    paper-dialog .month-container .navigation {
-        @apply(--layout-horizontal);
-        margin-bottom: 12px;
-    }
-
-    paper-dialog .month-container .navigation paper-button {
-        min-width: 40px;
-        border-radius: 50%;
-    }
-
-    paper-dialog .month-container .navigation *:nth-child(2) {
-        @apply(--layout-flex);
-        text-align: center;
     }
     </style>
 
     <template>
         <paper-dialog id="dialog">
 
-            <div class="header">
-                <span class="year">{{selectedYear}}</span> <!-- Could be a href, click opens year selector -->
-                <span class="date highlight">{{selectedDate}}</span>
+            <div class="toolbar">
+                <div class="year-display">2014</div>
+                <div class="date-display highlight">Thu, April 3</div>
             </div>
 
-            <div class="month-container">
+            <div class="container">
                 <div class="navigation">
-                    <paper-button on-click="_prevMonthAction">&lt;</paper-button>
-                    <div>{{currentMonth}}</div>
-                    <paper-button on-click="_nextMonthAction">&gt;</paper-button>
+                    <paper-icon-button icon="hardware:keyboard-arrow-left" alt="menu"></paper-icon-button>
+                    <div class="flex">
+                        <span>{ Date }</span>
+                    </div>
+                    <paper-icon-button icon="hardware:keyboard-arrow-right" alt="menu"></paper-icon-button>
                 </div>
-                <div class="head">
-                    <span>M</span>
-                    <span>D</span>
-                    <span>W</span>
-                    <span>D</span>
-                    <span>V</span>
-                    <span>Z</span>
-                    <span>Z</span>
-                </div>
-                <div class="container">
-                    <template is="dom-repeat" items="{{dates}}">
-                        <div>
-                            <template is="dom-repeat" items="{{item}}">
-                                <paper-button>{{item.day}}</paper-button>
-                            </template>
-                        </div>
-                    </template>
-                </div>
-            </div>
 
-            <div class="buttons">
-                <paper-button dialog-dismiss>CANCEL</paper-button>
-                <paper-button on-click="_confirmAction" dialog-confirm autofocus>OK</paper-button>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>CANCEL</paper-button>
+                    <paper-button on-click="_confirmAction" dialog-confirm autofocus>OK</paper-button>
+                </div>
             </div>
         </paper-dialog>
     </template>
