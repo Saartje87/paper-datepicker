@@ -16,6 +16,14 @@
         z-index: 0;
 
         @apply(--paper-icon-button);
+
+        width: 36px;
+        padding-bottom: 32px;
+
+        /*border-radius: 50%;*/
+
+        /*width: 36px;
+        height: 36px;*/
     }
 
     :host #ink {
@@ -29,13 +37,22 @@
         cursor: auto;
         @apply(--paper-icon-button-disabled);
     }
+
+    :host([selected]) {
+        color: pink;
+    }
+
+    .today {
+        /*color: green !important;*/
+        color: var(--default-primary-color);
+    }
     </style>
     <template>
         <paper-ripple id="ink" class="circle" center></paper-ripple>
-        <span>[[day]]</span>
+        <span id="text">[[day]]</span>
     </template>
     <script>
-    var TODAY = new Date();
+    var TODAY_DATE_STRING = new Date().toDateString();
 
     Polymer({
         is: 'paper-datepicker-button',
@@ -50,7 +67,7 @@
         ],
 
         properties: {
-            date: {
+            value: {
                 type: Date,
                 observer: '_dateChanged'
             },
@@ -62,7 +79,13 @@
 
         _dateChanged: function () {
 
-            this.day = this.date.getDate();
+            this.day = this.value.getDate();
+
+            if( this.value.toDateString() === TODAY_DATE_STRING ) {
+                this.$.text.classList.add('today');
+            } else {
+                this.$.text.classList.remove('today');
+            }
         }
     });
     </script>

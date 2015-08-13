@@ -2,10 +2,12 @@
 <link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <!-- <link rel="import" href="../bower_components/iron-icons/iron-icons.html"> -->
 <link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<script src="../bower_components/moment/moment.js"></script>
 
 <link rel="import" href="../paper-datepicker-button.html">
 
@@ -30,6 +32,10 @@
         paper-dialog {
             @apply(--layout-horizontal);
             min-width: 500px;
+        }
+
+        .toolbar {
+            width: 170px;
         }
     }
 
@@ -80,6 +86,8 @@
 
     .row {
         @apply(--layout-horizontal);
+        /*@apply(--layout-justified);*/
+        height: 36px;
     }
 
     section .row:first-child {
@@ -94,19 +102,20 @@
     </style>
 
     <template>
+
         <paper-dialog modal id="dialog">
 
             <div class="toolbar">
                 <!-- @todo(Saar) Could create new elements, wich handles anikmation when text changes -->
-                <div class="year-display">2014</div>
-                <div class="date-display highlight">Thu, April 3</div>
+                <div class="year-display">[[selectedYear]]</div>
+                <div class="date-display highlight">[[selectedDate]]</div>
             </div>
 
             <div class="container">
                 <div class="navigation">
                     <paper-icon-button icon="hardware:keyboard-arrow-left" alt="menu" on-tap="_prevMonthAction"></paper-icon-button>
                     <div class="flex">
-                        <span>{ Date }</span>
+                        <span>[[monthName]]</span>
                     </div>
                     <paper-icon-button icon="hardware:keyboard-arrow-right" alt="menu" on-tap="_nextMonthAction"></paper-icon-button>
                 </div>
@@ -125,55 +134,10 @@
                     <template is="dom-repeat" items="{{dates}}">
                         <div class="row">
                             <template is="dom-repeat" items="{{item}}">
-                                <paper-datepicker-button date="{{item}}"></paper-datepicker-button>
+                                <paper-datepicker-button value="{{item}}" on-tap="_tapSelectAction"></paper-datepicker-button>
                             </template>
                         </div>
                     </template>
-
-                    <!-- <div class="row">
-                        <paper-datepicker-button>1</paper-datepicker-button>
-                        <paper-datepicker-button>2</paper-datepicker-button>
-                        <paper-datepicker-button>3</paper-datepicker-button>
-                        <paper-datepicker-button>4</paper-datepicker-button>
-                    </div>
-
-                    <div class="row">
-                        <paper-datepicker-button>1</paper-datepicker-button>
-                        <paper-datepicker-button>2</paper-datepicker-button>
-                        <paper-datepicker-button>3</paper-datepicker-button>
-                        <paper-datepicker-button>4</paper-datepicker-button>
-                        <paper-datepicker-button>5</paper-datepicker-button>
-                        <paper-datepicker-button>6</paper-datepicker-button>
-                        <paper-datepicker-button>7</paper-datepicker-button>
-                    </div>
-
-                    <div class="row">
-                        <paper-datepicker-button>1</paper-datepicker-button>
-                        <paper-datepicker-button>2</paper-datepicker-button>
-                        <paper-datepicker-button>3</paper-datepicker-button>
-                        <paper-datepicker-button>4</paper-datepicker-button>
-                        <paper-datepicker-button>5</paper-datepicker-button>
-                        <paper-datepicker-button>6</paper-datepicker-button>
-                        <paper-datepicker-button>7</paper-datepicker-button>
-                    </div>
-
-                    <div class="row">
-                        <paper-datepicker-button>1</paper-datepicker-button>
-                        <paper-datepicker-button>2</paper-datepicker-button>
-                        <paper-datepicker-button>3</paper-datepicker-button>
-                        <paper-datepicker-button>4</paper-datepicker-button>
-                        <paper-datepicker-button>5</paper-datepicker-button>
-                        <paper-datepicker-button>6</paper-datepicker-button>
-                        <paper-datepicker-button>7</paper-datepicker-button>
-                    </div>
-
-                    <div class="row">
-                        <paper-datepicker-button>1</paper-datepicker-button>
-                        <paper-datepicker-button>2</paper-datepicker-button>
-                        <paper-datepicker-button>3</paper-datepicker-button>
-                        <paper-datepicker-button>4</paper-datepicker-button>
-                        <paper-datepicker-button>5</paper-datepicker-button>
-                    </div> -->
                 </section>
 
                 <div class="buttons">
@@ -185,10 +149,6 @@
     </template>
 
     <script>
-    // element registration
-    var MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"];
-
     Polymer({
 
         is: "paper-datepicker-dialog",
@@ -197,7 +157,7 @@
 
             value: {
                 type: String,
-                value: (new Date()).toISOString(),
+                value: moment().format('ddd, MMM D'),
                 reflectToAttribute: true
             },
 
@@ -225,7 +185,7 @@
                 type: String
             },
 
-            currentMonth: {
+            monthName: {
                 type: String
             }
 
@@ -233,11 +193,59 @@
             // minDate, maxDate
         },
 
+        behaviors: [
+            Polymer.IronA11yKeysBehavior
+        ],
+
+        keyBindings: {
+            'left right down up': '_pressedAction'
+        },
+
+        _pressedAction: function ( event ) {
+
+            var combo = event.detail.combo;
+
+            if( combo === 'left' ) {
+                // @todo(Saar) Previous day
+                this._prevMonthAction();
+            }
+
+            if( combo === 'top' ) {
+                // @todo(Saar) Previous week, same day of week
+                // this._prevMonthAction();
+            }
+
+            if( combo === 'right' ) {
+                // @todo(Saar) Next day
+                this._nextMonthAction();
+            }
+
+            if( combo === 'bottom' ) {
+                // @todo(Saar) Next week, same day of week
+                // this._prevMonthAction();
+            }
+        },
+
+        _tapSelectAction: function ( event ) {
+
+            var target = Polymer.dom(event).localTarget;
+
+            this._select(target.value);
+        },
+
+        _select: function () {
+
+            // node.value
+            var target = Polymer.dom(this).querySelector('[value="2015-08-13"]');
+
+            console.log(target);
+        },
+
         ready: function () {
 
             // @todo(Saar) Should handle this on select
             this.selectedYear = this.date.getFullYear();
-            this.selectedDate = this.date.toDateString().substr(0, 11);
+            this.selectedDate = moment(this.date).format('ddd, MMM D');
         },
 
         open: function () {
@@ -248,6 +256,10 @@
         close: function () {
 
             this.$.dialog.close();
+        },
+
+        _keyAction: function ( event ) {
+            console.log(event);
         },
 
         _confirmAction: function () {
@@ -278,18 +290,32 @@
 
         _createDates: function () {
 
-            //@todo(Saar) always have 6 weeks
+            // @todo(Saar) use moment
+
+            // window.requestAnimationFrame(this._renderMonth.bind(this));
+            window.setTimeout(this._renderMonth.bind(this), 60);
+
+            // this._renderMonth();
+        },
+
+        _renderMonth: function () {
 
             var date = new Date(this.date),
                 endDate = new Date(this.date),
-                dates = [[]],
+                dates = [],
                 week;
 
-            this.currentMonth = MONTH_NAMES[date.getMonth()];
+            this.monthName = moment(date).format('MMMM');
+            this.selectedYear = this.date.getFullYear();
+            this.selectedDate = moment(this.date).format('ddd, MMM D');
 
             date.setDate(1);
             endDate.setDate(1);
             endDate.setMonth(endDate.getMonth() + 1);
+
+            if( this.date.getDay() !== 0 ) {
+                dates.push([]);
+            }
 
             while( date < endDate ) {
 
@@ -306,6 +332,11 @@
                 }
 
                 date.setDate(date.getDate() + 1);
+            }
+
+            // 'Hack' to always display 6 rows
+            while( dates.length < 6 ) {
+                dates.push([]);
             }
 
             this.dates = dates;
