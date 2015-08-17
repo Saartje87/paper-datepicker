@@ -107,15 +107,15 @@
 
             <div class="toolbar">
                 <!-- @todo(Saar) Could create new elements, wich handles anikmation when text changes -->
-                <datepicker-animation class="year-display" label$="[[selectedYear]]"></datepicker-animation>
-                <datepicker-animation class="date-display highlight" label$="[[selectedDate]]"></datepicker-animation>
+                <datepicker-animation class="year-display" label$="[[_getYear(_date)]]"></datepicker-animation>
+                <datepicker-animation class="date-display highlight" label$="[[_getDate(_date)]]"></datepicker-animation>
             </div>
 
             <div class="container">
                 <div class="navigation">
                     <paper-icon-button icon="hardware:keyboard-arrow-left" alt="menu" on-tap="_prevMonthAction"></paper-icon-button>
                     <div class="flex">
-                        <datepicker-animation label$="[[monthName]]"></datepicker-animation>
+                        <datepicker-animation label$="[[_getNavText(_dateIterator)]]"></datepicker-animation>
                     </div>
                     <paper-icon-button icon="hardware:keyboard-arrow-right" alt="menu" on-tap="_nextMonthAction"></paper-icon-button>
                 </div>
@@ -131,10 +131,10 @@
                 </div>
 
                 <section>
-                    <template is="dom-repeat" items="{{dates}}">
+                    <template is="dom-repeat" items="{{_dateValues}}">
                         <div class="row">
                             <template is="dom-repeat" items="{{item}}">
-                                <paper-datepicker-button value="{{item}}" on-tap="_tapSelectAction"></paper-datepicker-button>
+                                <paper-datepicker-button value="{{item}}" selected$="{{_isSelected(item, _date)}}" on-tap="_selectAction"></paper-datepicker-button>
                             </template>
                         </div>
                     </template>
@@ -149,50 +149,55 @@
     </template>
 
     <script>
+    // @todo(Saar) Next / pres month should not change "selected date" feels weird
+    // @todo(Saar) Fix date clicks
+    // @todo(Saar) Jan 2016 breaks date calculation
+    // @todo(Saar) Key events should skip dates
+
+    function _toDateString ( date ) {
+        return date.toDateString();
+    }
+
     Polymer({
 
         is: "paper-datepicker-dialog",
 
         properties: {
 
-            firstRender: {
+            _firstRender: {
                 type: Boolean,
                 value: true
             },
 
             value: {
                 type: String,
-                value: moment().format('ddd, MMM D'),
-                reflectToAttribute: true
+                value: function () {
+                    return _toDateString(new Date());
+                },
+                // reflectToAttribute: true,
+                observer: '_valueChanged'
             },
 
-            dates: {
+            // Value as Date object
+            _date: {
+                type: Date
+            },
+
+            _dateIterator: {
+                type: Date,
+                value: function () {
+                    return new Date();
+                },
+                observer: '_dateIteratorChanged'
+            },
+
+            // ----
+            _dateValues: {
                 type: Array,
                 value: function () {
                     return [];
                 }
             },
-
-            date: {
-                type: Date,
-                value: function () {
-                    return new Date();
-                },
-                observer: '_createDates'
-            },
-
-            selectedYear: {
-                type: String,
-                // observer: '_getYear(date)'
-            },
-
-            selectedDate: {
-                type: String
-            },
-
-            monthName: {
-                type: String
-            }
 
             // locale
             // minDate, maxDate
@@ -206,6 +211,16 @@
             'left right down up': '_pressedAction'
         },
 
+        open: function () {
+
+            this.$.dialog.open();
+        },
+
+        close: function () {
+
+            this.$.dialog.close();
+        },
+
         _pressedAction: function ( event ) {
 
             var combo = event.detail.combo;
@@ -213,11 +228,13 @@
             if( combo === 'left' ) {
                 // @todo(Saar) Previous day
                 this._prevMonthAction();
+                // -1
             }
 
             if( combo === 'top' ) {
                 // @todo(Saar) Previous week, same day of week
                 // this._prevMonthAction();
+                // -7
             }
 
             if( combo === 'right' ) {
@@ -231,40 +248,29 @@
             }
         },
 
-        _tapSelectAction: function ( event ) {
+        _valueChanged: function ( newValue ) {
+
+            this._date = new Date(newValue);
+        },
+
+        _selectAction: function ( event ) {
 
             var target = Polymer.dom(event).localTarget;
 
             this._select(target.value);
         },
 
-        _select: function () {
+        _isSelected: function ( date ) {
 
-            // node.value
-            var target = Polymer.dom(this).querySelector('[value="2015-08-13"]');
-
-            console.log(target);
+            return _toDateString(this._date) === _toDateString(date);
         },
 
-        ready: function () {
+        _select: function ( date ) {
 
-            // @todo(Saar) Should handle this on select
-            this.selectedYear = this.date.getFullYear();
-            this.selectedDate = moment(this.date).format('ddd, MMM D');
-        },
+            // @todo(Saar) Select
+            var target = this.querySelector('[date="'+date.toDateString()+'"]');
 
-        open: function () {
-
-            this.$.dialog.open();
-        },
-
-        close: function () {
-
-            this.$.dialog.close();
-        },
-
-        _keyAction: function ( event ) {
-            console.log(event);
+            this.value = date;
         },
 
         _confirmAction: function () {
@@ -274,32 +280,52 @@
 
         _prevMonthAction: function () {
 
-            this.date.setMonth(this.date.getMonth() - 1);
+            this._dateIterator.setMonth(this._dateIterator.getMonth() - 1);
 
-            this._createDates();
+            // Not working :(
+            // @todo(Saar) Create github issue
+            // this.notifyPath('_dateIterator', this._dateIterator);
+
+            this.__updateIterator();
         },
 
         _nextMonthAction: function () {
 
-            this.date.setMonth(this.date.getMonth() + 1);
+            this._dateIterator.setMonth(this._dateIterator.getMonth() + 1);
 
-            this._createDates();
+            this.__updateIterator();
+        },
+
+        // Hack.. see _prevMonthAction
+        __updateIterator: function () {
+
+            this._dateIterator = new Date(this._dateIterator);
         },
 
         _getYear: function () {
 
-            console.log(this.date.getFullYear());
-
-            return this.date.getFullYear();
+            return this._date.getFullYear();
         },
 
-        _createDates: function () {
+        _getDate: function () {
 
-            if( this.firstRender ) {
-                this.firstRender = !this.firstRender;
+            return moment(this._date).format('ddd, MMM D');
+        },
+
+        _getNavText: function () {
+
+            return moment(this._dateIterator).format('MMM YYYY');
+        },
+
+        _dateIteratorChanged: function () {
+
+            // First time we must render our month immediately for dialog positioning
+            if( this._firstRender ) {
+                this._firstRender = !this._firstRender;
 
                 this._renderMonth();
             } else {
+                // Timeout helps mobile animations a lot! `< ~100`
                 window.setTimeout(this._renderMonth.bind(this), 60);
             }
         },
@@ -308,31 +334,31 @@
 
             // @todo(Saar) use moment
 
-            var date = new Date(this.date),
-                endDate = new Date(this.date),
-                dates = [],
+            var date = new Date(this._dateIterator),
+                endDate = new Date(this._dateIterator),
+                _dateValues = [],
                 week;
 
             this.monthName = moment(date).format('MMMM');
-            this.selectedYear = this.date.getFullYear();
-            this.selectedDate = moment(this.date).format('ddd, MMM D');
+            this.selectedYear = this._dateIterator.getFullYear();
+            this.selectedDate = moment(this._dateIterator).format('ddd, MMM D');
 
             date.setDate(1);
             endDate.setDate(1);
             endDate.setMonth(endDate.getMonth() + 1);
 
-            if( this.date.getDay() !== 0 ) {
-                dates.push([]);
+            if( this._dateIterator.getDay() !== 0 ) {
+                _dateValues.push([]);
             }
 
             while( date < endDate ) {
 
                 if( date.getDay() === 1 ) {
 
-                    dates.push([]);
+                    _dateValues.push([]);
                 }
 
-                week = dates[dates.length - 1];
+                week = _dateValues[_dateValues.length - 1];
 
                 if( week ) {
 
@@ -343,11 +369,11 @@
             }
 
             // 'Hack' to always display 6 rows
-            while( dates.length < 6 ) {
-                dates.push([]);
+            while( _dateValues.length < 6 ) {
+                _dateValues.push([]);
             }
 
-            this.dates = dates;
+            this._dateValues = _dateValues;
         }
     });
     </script>

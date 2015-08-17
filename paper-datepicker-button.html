@@ -38,13 +38,15 @@
         @apply(--paper-icon-button-disabled);
     }
 
-    :host([selected]) {
-        color: pink;
-    }
-
-    .today {
+    :host(.today) {
         /*color: green !important;*/
         color: var(--default-primary-color);
+    }
+
+    :host([selected]) {
+        background-color: var(--default-primary-color);
+        color: var(--text-primary-color);
+        border-radius: 50%;
     }
     </style>
     <template>
@@ -82,10 +84,12 @@
             this.day = this.value.getDate();
 
             if( this.value.toDateString() === TODAY_DATE_STRING ) {
-                this.$.text.classList.add('today');
+                this.classList.add('today');
             } else {
-                this.$.text.classList.remove('today');
+                this.classList.remove('today');
             }
+
+            this.setAttribute('date', this.value.toDateString());
         }
     });
     </script>
