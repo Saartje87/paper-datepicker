@@ -65,18 +65,18 @@
             // https://github.com/web-animations/web-animations-js
             // https://www.polymer-project.org/0.5/platform/web-animations.html -> Outdated?
             var player = this.$.oldLabel.animate([
-                {transform: "translate(0)"},
-                {transform: "translateY(-100%)"}
+                {transform: "translate(0)", opacity: 1},
+                {transform: "translateY(-100%)", opacity: 0}
             ], {
-                duration: 200,
+                duration: 180,
                 iterations: 1
             });
 
             var player = this.$.newLabel.animate([
-                {transform: "translate(0)"},
-                {transform: "translateY(-100%)"}
+                {transform: "translate(0)", opacity: 0},
+                {transform: "translateY(-100%)", opacity: 1}
             ], {
-                duration: 200,
+                duration: 180,
                 iterations: 1
             });
 
