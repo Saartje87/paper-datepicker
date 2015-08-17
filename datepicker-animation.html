@@ -1,0 +1,97 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-up-animation.html">
+
+<dom-module id="datepicker-animation">
+    <style>
+    :host {
+        display: block;
+        overflow: hidden;
+        /*border: 1px #c0c0c0 solid;*/
+        height: 1.3em;
+        font-size: inherit;
+        line-height: inherit;
+    }
+    </style>
+    <template>
+        <section id="oldLabel">
+            <span>{{oldLabel}}</span>
+        </section>
+        <section id="newLabel">
+            <span>{{newLabel}}</span>
+        </section>
+    </template>
+    <script>
+    Polymer({
+        is: 'datepicker-animation',
+
+        behaviors: [
+            Polymer.NeonAnimationRunnerBehavior
+        ],
+
+        properties: {
+
+            label: {
+                type: String,
+                observer: '_labelChange'
+            },
+
+            newLabel: {
+                type: String
+            },
+
+            oldLabel: {
+                type: String
+            }
+        },
+
+        _labelChange: function ( newValue, oldValue ) {
+
+            if( this.oldLabel === void 0 ) {
+                this.oldLabel = newValue;
+                return;
+            }
+
+            this.newLabel = newValue;
+            this.oldLabel = oldValue;
+
+            this._animate();
+        },
+
+        _animate: function () {
+
+            // @todo(Saar) Group animation
+            // https://github.com/web-animations/web-animations-js
+            // https://www.polymer-project.org/0.5/platform/web-animations.html -> Outdated?
+            var player = this.$.oldLabel.animate([
+                {transform: "translate(0)"},
+                {transform: "translateY(-100%)"}
+            ], {
+                duration: 200,
+                iterations: 1
+            });
+
+            var player = this.$.newLabel.animate([
+                {transform: "translate(0)"},
+                {transform: "translateY(-100%)"}
+            ], {
+                duration: 200,
+                iterations: 1
+            });
+
+            player.onfinish = this._onAnimationFinish.bind(this);
+        },
+
+        _onAnimationFinish: function() {
+
+            if( this.newLabel ) {
+                this.oldLabel = this.newLabel;
+                this.newLabel = '';
+            }
+
+            this.transform('translate(0)', this.$.oldLabel);
+        }
+    });
+    </script>
+</dom-module>

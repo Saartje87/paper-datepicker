@@ -107,15 +107,15 @@
 
             <div class="toolbar">
                 <!-- @todo(Saar) Could create new elements, wich handles anikmation when text changes -->
-                <div class="year-display">[[selectedYear]]</div>
-                <div class="date-display highlight">[[selectedDate]]</div>
+                <datepicker-animation class="year-display" label$="[[selectedYear]]"></datepicker-animation>
+                <datepicker-animation class="date-display highlight" label$="[[selectedDate]]"></datepicker-animation>
             </div>
 
             <div class="container">
                 <div class="navigation">
                     <paper-icon-button icon="hardware:keyboard-arrow-left" alt="menu" on-tap="_prevMonthAction"></paper-icon-button>
                     <div class="flex">
-                        <span>[[monthName]]</span>
+                        <datepicker-animation label$="[[monthName]]"></datepicker-animation>
                     </div>
                     <paper-icon-button icon="hardware:keyboard-arrow-right" alt="menu" on-tap="_nextMonthAction"></paper-icon-button>
                 </div>
@@ -154,6 +154,11 @@
         is: "paper-datepicker-dialog",
 
         properties: {
+
+            firstRender: {
+                type: Boolean,
+                value: true
+            },
 
             value: {
                 type: String,
@@ -290,15 +295,18 @@
 
         _createDates: function () {
 
-            // @todo(Saar) use moment
+            if( this.firstRender ) {
+                this.firstRender = !this.firstRender;
 
-            // window.requestAnimationFrame(this._renderMonth.bind(this));
-            window.setTimeout(this._renderMonth.bind(this), 60);
-
-            // this._renderMonth();
+                this._renderMonth();
+            } else {
+                window.setTimeout(this._renderMonth.bind(this), 60);
+            }
         },
 
         _renderMonth: function () {
+
+            // @todo(Saar) use moment
 
             var date = new Date(this.date),
                 endDate = new Date(this.date),
