@@ -74,6 +74,12 @@
         @apply(--layout-horizontal);
     }
 
+    .navigation-text {
+        text-align: center;
+        padding-top: 8px;
+        font-weight: 500;
+    }
+
     .header {
         @apply(--layout-horizontal);
     }
@@ -114,7 +120,7 @@
             <div class="container">
                 <div class="navigation">
                     <paper-icon-button icon="hardware:keyboard-arrow-left" alt="menu" on-tap="_prevMonthAction"></paper-icon-button>
-                    <div class="flex">
+                    <div class="flex navigation-text">
                         <datepicker-animation label$="[[_getNavText(_dateIterator)]]"></datepicker-animation>
                     </div>
                     <paper-icon-button icon="hardware:keyboard-arrow-right" alt="menu" on-tap="_nextMonthAction"></paper-icon-button>
@@ -149,10 +155,7 @@
     </template>
 
     <script>
-    // @todo(Saar) Next / pres month should not change "selected date" feels weird
-    // @todo(Saar) Fix date clicks
     // @todo(Saar) Jan 2016 breaks date calculation
-    // @todo(Saar) Key events should skip dates
 
     function _toDateString ( date ) {
         return date.toDateString();
