@@ -226,25 +226,32 @@
             var combo = event.detail.combo;
 
             if( combo === 'left' ) {
-                // @todo(Saar) Previous day
-                this._prevMonthAction();
-                // -1
+                this._addDays(-1);
             }
 
-            if( combo === 'top' ) {
-                // @todo(Saar) Previous week, same day of week
-                // this._prevMonthAction();
-                // -7
+            if( combo === 'up' ) {
+                this._addDays(-7);
             }
 
             if( combo === 'right' ) {
-                // @todo(Saar) Next day
-                this._nextMonthAction();
+                this._addDays(1);
             }
 
-            if( combo === 'bottom' ) {
-                // @todo(Saar) Next week, same day of week
-                // this._prevMonthAction();
+            if( combo === 'down' ) {
+                this._addDays(7);
+            }
+        },
+
+        _addDays: function ( days ) {
+
+            var date = new Date(this._date);
+
+            date.setDate(date.getDate() + days);
+
+            this.value = _toDateString(date);
+
+            if( this._dateIterator.getMonth() !== date.getMonth() ) {
+                this._dateIterator = date;
             }
         },
 
