@@ -8,18 +8,21 @@
     :host {
         display: block;
         overflow: hidden;
-        height: 1.3em;
+        position: relative;
         font-size: inherit;
         line-height: inherit;
     }
+
+    #newLabel {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+    }
     </style>
     <template>
-        <section id="oldLabel">
-            <span>{{oldLabel}}</span>
-        </section>
-        <section id="newLabel">
-            <span>{{newLabel}}</span>
-        </section>
+        <section id="oldLabel">{{oldLabel}}</section>
+        <section id="newLabel">{{newLabel}}</section>
     </template>
     <script>
     Polymer({
