@@ -1,4 +1,4 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="./bower_components/polymer/polymer.html">
 
 <dom-module id="paper-datepicker-button">
     <style>
@@ -18,12 +18,7 @@
         @apply(--paper-icon-button);
 
         width: 36px;
-        padding-bottom: 32px;
-
-        /*border-radius: 50%;*/
-
-        /*width: 36px;
-        height: 36px;*/
+        height: 36px;
     }
 
     :host #ink {
@@ -43,6 +38,7 @@
         color: var(--default-primary-color);
     }
 
+    /* Could be done with extra element, which scaled from 0 to 1 */
     :host([selected]) {
         background-color: var(--default-primary-color);
         color: var(--text-primary-color);

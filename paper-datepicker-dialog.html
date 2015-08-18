@@ -1,15 +1,15 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
-<!-- <link rel="import" href="../bower_components/iron-icons/iron-icons.html"> -->
-<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="./bower_components/polymer/polymer.html">
+<link rel="import" href="./bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="./bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="./bower_components/paper-button/paper-button.html">
+<link rel="import" href="./bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+<!-- <link rel="import" href="./bower_components/iron-icons/iron-icons.html"> -->
+<link rel="import" href="./bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="./bower_components/paper-icon-button/paper-icon-button.html">
 
-<script src="../bower_components/moment/moment.js"></script>
+<script src="./bower_components/moment/moment.js"></script>
 
-<link rel="import" href="../paper-datepicker-button.html">
+<link rel="import" href="./paper-datepicker-button.html">
 
 <dom-module id="paper-datepicker-dialog">
 
@@ -69,6 +69,7 @@
         @apply(--layout-flex);
         @apply(--layout-scroll);
         margin: 0;
+        padding: 8px 4px 0 4px;
     }
 
     .navigation {
@@ -93,8 +94,12 @@
 
     .row {
         @apply(--layout-horizontal);
-        /*@apply(--layout-justified);*/
         height: 36px;
+    }
+
+    .button-spacer {
+        text-align: center;
+        max-width: calc(100% / 7);
     }
 
     section .row:first-child {
@@ -104,7 +109,6 @@
     paper-datepicker-button {
         @apply(--layout-flex);
         text-align: center;
-        max-width: calc(100% / 7);
     }
     </style>
 
@@ -141,7 +145,9 @@
                     <template is="dom-repeat" items="{{_dateValues}}">
                         <div class="row">
                             <template is="dom-repeat" items="{{item}}">
-                                <paper-datepicker-button value="{{item}}" selected$="{{_isSelected(item, _date)}}" on-tap="_selectAction"></paper-datepicker-button>
+                                <div class="flex button-spacer">
+                                    <paper-datepicker-button value="{{item}}" selected$="{{_isSelected(item, _date)}}" on-tap="_selectAction"></paper-datepicker-button>
+                                </div>
                             </template>
                         </div>
                     </template>
