@@ -355,24 +355,23 @@
 
         _renderMonth: function () {
 
-            // @todo(Saar) use moment
-
             var date = new Date(this._dateIterator),
-                endDate = new Date(this._dateIterator),
+                endDate = new Date(date),
                 _dateValues = [],
                 week;
 
+            // Set iterators to fixed date
             date.setDate(1);
             endDate.setDate(1);
             endDate.setMonth(endDate.getMonth() + 1);
 
-            if( this._dateIterator.getDay() !== 0 ) {
+            if( date.getDay() !== 1 ) {
                 _dateValues.push([]);
             }
 
             while( date < endDate ) {
 
-                if( date.getDay() === 1 ) {
+                if( date.getDay() === 1  ) {
 
                     _dateValues.push([]);
                 }
