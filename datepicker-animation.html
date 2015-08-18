@@ -61,10 +61,20 @@
 
         _animate: function () {
 
+            // Stop current animation
+            if( this.player1 ) {
+                this.player1.cancel();
+                this.player1 = null;
+
+                this.player2.cancel();
+                this.player2 = null;
+            }
+
+
             // @todo(Saar) Group animation
             // https://github.com/web-animations/web-animations-js
             // https://www.polymer-project.org/0.5/platform/web-animations.html -> Outdated?
-            var player = this.$.oldLabel.animate([
+            this.player1 = this.$.oldLabel.animate([
                 {transform: "translate(0)", opacity: 1},
                 {transform: "translateY(-100%)", opacity: 0}
             ], {
@@ -72,7 +82,7 @@
                 iterations: 1
             });
 
-            var player = this.$.newLabel.animate([
+            this.player2 = this.$.newLabel.animate([
                 {transform: "translate(0)", opacity: 0},
                 {transform: "translateY(-100%)", opacity: 1}
             ], {
@@ -80,7 +90,7 @@
                 iterations: 1
             });
 
-            player.onfinish = this._onAnimationFinish.bind(this);
+            this.player2.onfinish = this._onAnimationFinish.bind(this);
         },
 
         _onAnimationFinish: function() {
