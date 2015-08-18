@@ -354,10 +354,6 @@
                 _dateValues = [],
                 week;
 
-            this.monthName = moment(date).format('MMMM');
-            this.selectedYear = this._dateIterator.getFullYear();
-            this.selectedDate = moment(this._dateIterator).format('ddd, MMM D');
-
             date.setDate(1);
             endDate.setDate(1);
             endDate.setMonth(endDate.getMonth() + 1);
