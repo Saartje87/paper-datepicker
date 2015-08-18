@@ -25,13 +25,13 @@
     }
 
     paper-dialog {
-        min-width: 300px;
+        min-width: 330px;
     }
 
     @media all and (orientation:landscape) {
         paper-dialog {
             @apply(--layout-horizontal);
-            min-width: 500px;
+            min-width: 510px;
         }
 
         .toolbar {
@@ -44,7 +44,8 @@
         background-color: var(--default-primary-color);
         color: var(--default-text-color);
         margin-top: 0;
-        padding: 24px;
+        padding: 18px;
+        padding-bottom: 14px;
     }
 
     .toolbar .year-display {
@@ -54,9 +55,10 @@
     }
 
     .toolbar .date-display {
-        @apply(--paper-font-title);
+        @apply(--paper-font-display1);
         overflow: hidden;
         opacity: 0.7;
+        margin-top: 2px;
     }
 
     .toolbar .highlight {
@@ -156,6 +158,10 @@
 
     <script>
     // @todo(Saar) Jan 2016 breaks date calculation
+    // @todo(Saar) Unit tests
+    // @todo(Saar) Swipe events (skip month)
+    // @todo(Saar) Animated months -> Animated pages?
+    // @todo(Saar) Year view
 
     function _toDateString ( date ) {
         return date.toDateString();
