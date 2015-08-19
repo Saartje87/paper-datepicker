@@ -1,5 +1,7 @@
 <link rel="import" href="./bower_components/polymer/polymer.html">
 
+<link rel="import" href="./bower_components/paper-behaviors/paper-button-behavior.html">
+
 <dom-module id="paper-datepicker-button">
     <style>
     :host {
@@ -55,13 +57,8 @@
     Polymer({
         is: 'paper-datepicker-button',
 
-        hostAttributes: {
-            role: 'button',
-            tabindex: '0'
-        },
-
         behaviors: [
-            Polymer.PaperInkyFocusBehavior
+            Polymer.PaperButtonBehavior
         ],
 
         properties: {
