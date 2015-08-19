@@ -198,7 +198,8 @@
 
     <script>
     // @todo(Saar) Unit tests
-    // @todo(Saar) Animated months -> Animated pages?
+    // @todo(Saar) Rewrite/cleanup month animations.
+    // @todo(Saar) Animations should move in a specific direction (up/down)
     // @todo(Saar) Swipe events (skip month)
     // @todo(Saar) Year view
     // @todo(Saar) Break "Wed, Apr 8" on landscape
@@ -311,8 +312,11 @@
 
             this.value = _toDateString(date);
 
-            if( this._dateIterator.getMonth() !== date.getMonth() ) {
-                this._dateIterator = date;
+            // Show month when day changes
+            if(  date.getMonth() < this._dateIterator.getMonth() ) {
+                this._prevMonthAction();
+            } else if(  date.getMonth() > this._dateIterator.getMonth() ) {
+                this._nextMonthAction();
             }
         },
 
