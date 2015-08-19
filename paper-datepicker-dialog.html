@@ -301,23 +301,23 @@
         },
 
         _current: function () {
-            this._dateIterator = new Date(this._date);
+
+            var diff = this._date.getMonth() - this._dateIterator.getMonth(),
+                yearDiff = this._date.getFullYear() - this._dateIterator.getFullYear();
+
+            this._addMonth(diff + (yearDiff * 12));
         },
 
         _addDays: function ( days ) {
 
-            var date = new Date(this._date),
-                diff;
+            var date = new Date(this._date);
 
             date.setDate(date.getDate() + days);
 
             this.value = _toDateString(date);
 
-            diff = date.getMonth() - this._dateIterator.getMonth();
-
-            if( diff !== 0 ) {
-                this._addMonth(diff);
-            }
+            // Go to current month
+            this._addMonth(date.getMonth() - this._dateIterator.getMonth());
         },
 
         _valueChanged: function ( newValue ) {
@@ -364,6 +364,10 @@
         _addMonth: function ( add ) {
 
             var translate = (add > 0) ? '-100%' : '100%';
+
+            if( add === 0 ) {
+                return;
+            }
 
             this.toggleClass('next-month-container', add > 0, this.$.monthToggle);
             this.toggleClass('previous-month-container', add < 0, this.$.monthToggle);
