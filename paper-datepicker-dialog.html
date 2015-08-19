@@ -317,7 +317,10 @@
             this.value = _toDateString(date);
 
             // Go to current month
-            this._addMonth(date.getMonth() - this._dateIterator.getMonth());
+            var diff = date.getMonth() - this._dateIterator.getMonth(),
+                yearDiff = date.getFullYear() - this._dateIterator.getFullYear();
+
+            this._addMonth(diff + (yearDiff * 12));
         },
 
         _valueChanged: function ( newValue ) {
@@ -372,12 +375,9 @@
             this.toggleClass('next-month-container', add > 0, this.$.monthToggle);
             this.toggleClass('previous-month-container', add < 0, this.$.monthToggle);
 
-            // Steps
-            // Create new month
+            // Render new month
             this._renderMonth(true, add);
-            // Position to correct position, use classes
-            // Animate
-            //
+
             this._dateIterator.setMonth(this._dateIterator.getMonth() + add);
 
             // var TIME = 500;
