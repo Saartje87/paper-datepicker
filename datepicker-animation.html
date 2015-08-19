@@ -72,21 +72,21 @@
             // @todo(Saar) Group animation
             // https://github.com/web-animations/web-animations-js
             // https://www.polymer-project.org/0.5/platform/web-animations.html -> Outdated?
+            var config = {
+                duration: 350,
+                iterations: 1,
+                easing: 'ease-out'
+            };
+
             this.player1 = this.$.oldLabel.animate([
                 {transform: "translate(0)", opacity: 1},
                 {transform: "translateY(-100%)", opacity: 0}
-            ], {
-                duration: 180,
-                iterations: 1
-            });
+            ], config);
 
             this.player2 = this.$.newLabel.animate([
                 {transform: "translate(0)", opacity: 0},
                 {transform: "translateY(-100%)", opacity: 1}
-            ], {
-                duration: 180,
-                iterations: 1
-            });
+            ], config);
 
             this.player2.onfinish = this._onAnimationFinish.bind(this);
         },
