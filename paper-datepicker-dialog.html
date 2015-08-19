@@ -51,6 +51,7 @@
         @apply(--paper-font-subhead);
         overflow: hidden;
         opacity: 0.7;
+        cursor: pointer;
     }
 
     .toolbar .date-display {
@@ -58,6 +59,7 @@
         overflow: hidden;
         opacity: 0.7;
         margin-top: 2px;
+        cursor: pointer;
     }
 
     .toolbar .highlight {
@@ -90,7 +92,7 @@
     .header div {
         @apply(--layout-flex);
         text-align: center;
-        color: #9e9e9e; /* @todo(Saar) Use --foo */
+        color: var(--secondary-text-color);
     }
 
     .row {
@@ -112,6 +114,25 @@
         @apply(--layout-flex);
         text-align: center;
     }
+
+    .month-container {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .previous-month-container {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+    }
+
+    .next-month-container {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        width: 100%;
+    }
     </style>
 
     <template>
@@ -119,18 +140,17 @@
         <paper-dialog modal id="dialog">
 
             <div class="toolbar">
-                <!-- @todo(Saar) Could create new elements, wich handles anikmation when text changes -->
-                <datepicker-animation class="year-display" label$="[[_getYear(_date)]]"></datepicker-animation>
-                <datepicker-animation class="date-display highlight" label$="[[_getDate(_date)]]"></datepicker-animation>
+                <datepicker-animation class="year-display" label$="[[_getYear(_date)]]" on-click="..yearPicker.."></datepicker-animation>
+                <datepicker-animation class="date-display highlight" label$="[[_getDate(_date)]]" on-click="_current"></datepicker-animation>
             </div>
 
             <div class="container">
                 <div class="navigation">
-                    <paper-icon-button icon="hardware:keyboard-arrow-left" alt="menu" on-tap="_prevMonthAction"></paper-icon-button>
+                    <paper-icon-button icon="hardware:keyboard-arrow-left" alt="menu" on-click="_prevMonthAction"></paper-icon-button>
                     <div class="flex navigation-text">
                         <datepicker-animation label$="[[_getNavText(_dateIterator)]]"></datepicker-animation>
                     </div>
-                    <paper-icon-button icon="hardware:keyboard-arrow-right" alt="menu" on-tap="_nextMonthAction"></paper-icon-button>
+                    <paper-icon-button icon="hardware:keyboard-arrow-right" alt="menu" on-click="_nextMonthAction"></paper-icon-button>
                 </div>
 
                 <div class="header">
@@ -143,17 +163,30 @@
                     <div>Z</div>
                 </div>
 
-                <section>
-                    <template is="dom-repeat" items="{{_dateValues}}">
-                        <div class="row">
-                            <template is="dom-repeat" items="{{item}}">
-                                <div class="flex button-spacer">
-                                    <paper-datepicker-button value="{{item}}" selected$="{{_isSelected(item, _date)}}" on-tap="_selectAction"></paper-datepicker-button>
-                                </div>
-                            </template>
-                        </div>
-                    </template>
-                </section>
+                <div class="month-container">
+                    <section id="month">
+                        <template is="dom-repeat" items="{{_dateValues}}">
+                            <div class="row">
+                                <template is="dom-repeat" items="{{item}}">
+                                    <div class="flex button-spacer">
+                                        <paper-datepicker-button value="{{item}}" selected$="{{_isSelected(item, _date)}}" on-click="_selectAction"></paper-datepicker-button>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </section>
+                    <section id="monthToggle" class="next-month-container">
+                        <template is="dom-repeat" items="{{_dateValuesToggle}}">
+                            <div class="row">
+                                <template is="dom-repeat" items="{{item}}">
+                                    <div class="flex button-spacer">
+                                        <paper-datepicker-button value="{{item}}" selected$="{{_isSelected(item, _date)}}" on-click="_selectAction"></paper-datepicker-button>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </section>
+                </div>
 
                 <div class="buttons">
                     <paper-button dialog-dismiss>CANCEL</paper-button>
@@ -164,11 +197,11 @@
     </template>
 
     <script>
-    // @todo(Saar) Jan 2016 breaks date calculation
     // @todo(Saar) Unit tests
-    // @todo(Saar) Swipe events (skip month)
     // @todo(Saar) Animated months -> Animated pages?
+    // @todo(Saar) Swipe events (skip month)
     // @todo(Saar) Year view
+    // @todo(Saar) Break "Wed, Apr 8" on landscape
 
     function _toDateString ( date ) {
         return date.toDateString();
@@ -208,12 +241,20 @@
             },
 
             // ----
+            // Use two dateValues array for animations
             _dateValues: {
                 type: Array,
                 value: function () {
                     return [];
                 }
             },
+
+            _dateValuesToggle: {
+                type: Array,
+                value: function () {
+                    return [];
+                }
+            }
 
             // locale
             // minDate, maxDate
@@ -258,6 +299,10 @@
             }
         },
 
+        _current: function () {
+            this._dateIterator = new Date(this._date);
+        },
+
         _addDays: function ( days ) {
 
             var date = new Date(this._date);
@@ -291,7 +336,7 @@
         _select: function ( date ) {
 
             // @todo(Saar) Select
-            var target = this.querySelector('[date="'+date.toDateString()+'"]');
+            // var target = this.querySelector('[date="'+date.toDateString()+'"]');
 
             this.value = date;
         },
@@ -303,20 +348,63 @@
 
         _prevMonthAction: function () {
 
-            this._dateIterator.setMonth(this._dateIterator.getMonth() - 1);
+            this._addMonth(-1);
 
-            // Not working :(
             // @todo(Saar) Create github issue
+            // this._dateIterator.setMonth(this._dateIterator.getMonth() - 1);
             // this.notifyPath('_dateIterator', this._dateIterator);
-
-            this.__updateIterator();
         },
 
         _nextMonthAction: function () {
 
-            this._dateIterator.setMonth(this._dateIterator.getMonth() + 1);
+            this._addMonth(1);
+        },
 
-            this.__updateIterator();
+        _addMonth: function ( add ) {
+
+            var translate = (add === 1) ? '-100%' : '100%';
+
+            this.toggleClass('next-month-container', add === 1, this.$.monthToggle);
+            this.toggleClass('previous-month-container', add === -1, this.$.monthToggle);
+
+            // Steps
+            // Create new month
+            this._renderMonth(true, add);
+            // Position to correct position, use classes
+            // Animate
+            //
+            this._dateIterator.setMonth(this._dateIterator.getMonth() + add);
+
+            // var TIME = 500;
+            var config = {
+                direction: 'alternate',
+                duration: 500,
+                iterations: 1,
+                easing: 'ease-out'
+            };
+
+            this.player1 = this.$.month.animate([
+                {transform: "translate(0)", opacity: 1},
+                {transform: "translateX("+translate+")", opacity: 0}
+            ], config);
+
+            this.player2 = this.$.monthToggle.animate([
+                {transform: "translate(0)", opacity: 0},
+                {transform: "translateX("+translate+")", opacity: 1}
+            ], config);
+
+            this.player2.onfinish = function () {
+
+                this.transform('translateX(-100%)', this.$.month);
+                this.transform('translateX(-100%)', this.$.monthToggle);
+
+                this._dateValues = this._dateValuesToggle;
+
+                this.transform('translateX(0)', this.$.month);
+                this.transform('translateX(0)', this.$.monthToggle);
+
+                this.__updateIterator();
+            }.bind(this);
         },
 
         // Hack.. see _prevMonthAction
@@ -346,22 +434,37 @@
             if( this._firstRender ) {
                 this._firstRender = !this._firstRender;
 
-                this._renderMonth();
+                this._render();
             } else {
-                // Timeout helps mobile animations a lot! `< ~100`
-                window.setTimeout(this._renderMonth.bind(this), 60);
+                // Timeout helps mobile animations a lot!
+                window.setTimeout(this._render.bind(this), 60);
             }
         },
 
-        _renderMonth: function () {
+        _render: function () {
+
+            // _previousMonthDateValues
+            // _nextMonthDateValues
+
+            this._renderMonth();
+
+            // @todo(Saar) clearTimeout
+            // window.setTimeout(this._renderMonth.bind(this, -1), 17);
+            // window.setTimeout(this._renderMonth.bind(this, 1), 17);
+        },
+
+        _renderMonth: function ( renderToggle, add ) {
 
             var date = new Date(this._dateIterator),
-                endDate = new Date(date),
+                endDate,
                 _dateValues = [],
                 week;
 
             // Set iterators to fixed date
             date.setDate(1);
+            date.setMonth(date.getMonth() + (add || 0));
+
+            endDate = new Date(date);
             endDate.setDate(1);
             endDate.setMonth(endDate.getMonth() + 1);
 
@@ -391,7 +494,11 @@
                 _dateValues.push([]);
             }
 
-            this._dateValues = _dateValues;
+            if( renderToggle ) {
+                this._dateValuesToggle = _dateValues;
+            } else {
+                this._dateValues = _dateValues;
+            }
         }
     });
     </script>
