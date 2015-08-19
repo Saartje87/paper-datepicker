@@ -306,17 +306,17 @@
 
         _addDays: function ( days ) {
 
-            var date = new Date(this._date);
+            var date = new Date(this._date),
+                diff;
 
             date.setDate(date.getDate() + days);
 
             this.value = _toDateString(date);
 
-            // Show month when day changes
-            if(  date.getMonth() < this._dateIterator.getMonth() ) {
-                this._prevMonthAction();
-            } else if(  date.getMonth() > this._dateIterator.getMonth() ) {
-                this._nextMonthAction();
+            diff = date.getMonth() - this._dateIterator.getMonth();
+
+            if( diff !== 0 ) {
+                this._addMonth(diff);
             }
         },
 
@@ -338,9 +338,6 @@
         },
 
         _select: function ( date ) {
-
-            // @todo(Saar) Select
-            // var target = this.querySelector('[date="'+date.toDateString()+'"]');
 
             this.value = date;
         },
@@ -366,10 +363,10 @@
 
         _addMonth: function ( add ) {
 
-            var translate = (add === 1) ? '-100%' : '100%';
+            var translate = (add > 0) ? '-100%' : '100%';
 
-            this.toggleClass('next-month-container', add === 1, this.$.monthToggle);
-            this.toggleClass('previous-month-container', add === -1, this.$.monthToggle);
+            this.toggleClass('next-month-container', add > 0, this.$.monthToggle);
+            this.toggleClass('previous-month-container', add < 0, this.$.monthToggle);
 
             // Steps
             // Create new month
@@ -447,14 +444,7 @@
 
         _render: function () {
 
-            // _previousMonthDateValues
-            // _nextMonthDateValues
-
             this._renderMonth();
-
-            // @todo(Saar) clearTimeout
-            // window.setTimeout(this._renderMonth.bind(this, -1), 17);
-            // window.setTimeout(this._renderMonth.bind(this, 1), 17);
         },
 
         _renderMonth: function ( renderToggle, add ) {
