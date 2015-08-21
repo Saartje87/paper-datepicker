@@ -163,7 +163,7 @@
                     <div>Z</div>
                 </div>
 
-                <div class="month-container">
+                <div id="monthContainer" class="month-container">
                     <section id="month">
                         <template is="dom-repeat" items="{{_dateValues}}">
                             <div class="row">
@@ -268,6 +268,59 @@
         keyBindings: {
             'left right down up': '_pressedAction'
         },
+
+        // Swipe test
+        listeners: {
+            track: '_trackAction',
+            down: '_downAction',
+            up: '_upAction'
+            // tap: '_tapHandler'
+        },
+
+        _trackAction: function ( event ) {
+
+            console.log(event.detail.state);
+
+            switch (event.detail.state) {
+                case 'start':
+                    this._trackStart(event);
+                    break;
+                case 'track':
+                    this._trackX(event);
+                    break;
+                case 'end':
+                    this._trackEnd(event);
+                    break;
+            }
+        },
+
+        _trackStart: function ( event ) {
+
+            this._dragging = true;
+            this._width = this.$.monthContainer.offsetWidth;
+            this._transition = false; // Do not animate drag
+        },
+
+        _trackX: function ( event ) {
+
+            var dx = event.detail.dx;
+
+            this.transform('translateX('+dx+'px)', this.$.monthContainer);
+        },
+
+        _trackEnd: function ( event ) {
+
+        },
+
+        _downAction: function () {
+
+        },
+
+        _upAction: function () {
+
+        },
+
+        // \Swipe test
 
         open: function () {
 
@@ -383,10 +436,17 @@
             // var TIME = 500;
             var config = {
                 direction: 'alternate',
-                duration: 500,
+                duration: 600,
                 iterations: 1,
                 easing: 'ease-out'
             };
+
+            // var animationGroup = new AnimationGroup();
+
+            // // var animationSequence = new SequenceEffects([
+            //     new Animation(this.$.month, [{transform: "translate(0)", opacity: 1}, {transform: "translateX("+translate+")", opacity: 0}], 500);
+            //     new Animation(this.$.monthToggle, [{transform: "translate(0)", opacity: 0}, {transform: "translateX("+translate+")", opacity: 1}], 500);
+            // // ]);
 
             this.player1 = this.$.month.animate([
                 {transform: "translate(0)", opacity: 1},

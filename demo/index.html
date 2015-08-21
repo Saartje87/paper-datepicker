@@ -21,6 +21,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <link rel="import" href="../paper-datepicker-dialog.html">
 
+  <link rel="import" href="../datepicker-animation.html">
+
   <!-- <link rel="import" href="../paper-dialog.html">
   <link rel="import" href="../bower_components/paper-button/paper-button.html"> -->
 
@@ -30,6 +32,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <paper-datepicker-dialog></paper-datepicker-dialog>
 
+    <!-- <datepicker-animation label="2014"></datepicker-animation> -->
+
     <script>
     // document.addEventListener('');
     // document.que....open()
@@ -37,7 +41,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         var picker = window.picker = document.querySelector('paper-datepicker-dialog');
 
-        picker.open();
+        // window.AAP = document.querySelector('datepicker-animation');
+        //
+        // setTimeout(function () {
+        //     window.AAP.label = '2015';
+        // }, 1000);
+
+        picker && picker.open();
     });
     </script>
 
